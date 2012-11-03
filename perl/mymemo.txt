@@ -1,0 +1,35 @@
+# yum install pcre-devel.x86_64
+
+export CWD=`pwd`
+wget http://memcached.googlecode.com/files/memcached-1.4.15.tar.gz
+tar zxf memcached-1.4.15.tar.gz
+cd memcached-1.4.15
+./configure --prefix=$CWD/memcached
+make
+make install
+cd ..
+
+#wget http://nginx.org/download/nginx-1.2.4.tar.gz
+#tar zxf nginx-1.2.4.tar.gz
+#cd nginx-1.2.4
+#./configure --prefix=$CWD/nginx --with-http_gzip_static_module
+#make 
+#make install
+#cd ..
+#rm nginx/conf/nginx.conf
+#ln -s ../../nginx_rev.conf nginx/conf/nginx.conf
+
+wget http://agentzh.org/misc/nginx/ngx_openresty-1.2.3.8.tar.gz
+tar zxf ngx_openresty-1.2.3.8.tar.gz
+cd ngx_openresty-1.2.3.8
+export PATH=/sbin:$PATH
+./configure --with-luajit --prefix=$CWD/ngx --with-http_gzip_static_module
+make
+make install
+cd ..
+mv ngx/nginx/conf/nginx.conf ngx/nginx/conf/nginx.conf.orig
+ln -s ../../../nginx.conf ngx/nginx/conf/nginx.conf
+
+ln -s ../../../nginx.conf ngx/nginx/conf/nginx_rev.conf
+
+
