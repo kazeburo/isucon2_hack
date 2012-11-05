@@ -49,6 +49,8 @@ open(my $fh, "buy.lua.tx");
 open(my $lua, ">","buy.lua");
 while (<$fh> ) {
     s/<MEMCACHED_PORT>/$port/;
+    s/<DATABASE>/$host/;
+    s/<DBNAME>/$dbname/;
     print $lua $_
 }
 

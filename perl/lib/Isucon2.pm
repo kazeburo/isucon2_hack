@@ -178,7 +178,7 @@ post '/admin' => sub {
     my $dbh = $self->dbh;
     my $memcached = $self->memcached;
     $dbh->select_one('SELECT GET_LOCK("initdb",60)');
-    for (qw/artist idpot order_request stock ticket variation/) {
+    for (qw/artist order_request stock ticket variation/) {
         $dbh->query('TRUNCATE TABLE '.$_);
     }
     open(my $fh, '<', $self->root_dir . '/mydata.sql') or die $!;
@@ -204,19 +204,17 @@ post '/admin' => sub {
     $dbh->select_one('SELECT RELEASE_LOCK("initdb")');
 
 =pod
+    $self->dbh->select_one('SELECT GET_LOCK("initdb",60)');
     open(my $fh, '<', $self->root_dir . '/../config/database/initial_data.sql') or die $!;
     for my $sql (<$fh>) {
         chomp $sql;
         $self->dbh->query($sql) if $sql;
     }
-    $self->dbh->select_one('SELECT GET_LOCK("idpot_lock",60)');
-    $self->dbh->query('TRUNCATE TABLE idpot');
     my $variations = $self->dbh->select_all(
         'SELECT id, name FROM variation ORDER BY id',
     );
     for my $variation (@$variations) {
         my $stock_count = $self->dbh->select_one('SELECT COUNT(*) FROM stock WHERE variation_id = ?',$variation->{id});
-        $self->dbh->query('INSERT INTO idpot (variation_id, id, max_id) VALUES (?,?,?)', $variation->{id}, 0, $stock_count);
         my @rid = shuffle( 1..$stock_count );
         my $rows = $self->dbh->select_all('SELECT id FROM stock WHERE variation_id = ?', $variation->{id});
         for my $row ( @$rows ) {
@@ -227,7 +225,7 @@ post '/admin' => sub {
         }
     }
     $self->dbh->query('UPDATE stock SET order_id = 0');
-    $self->dbh->select_one('SELECT RELEASE_LOCK("idpot_lock")');
+    $self->dbh->select_one('SELECT RELEASE_LOCK("initdb")');
     close($fh);
 =cut
 

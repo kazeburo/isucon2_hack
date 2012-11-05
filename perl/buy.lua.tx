@@ -72,9 +72,9 @@ ngx.say('会員ID:<span class="member_id">',member_id,'</span>で<span class="re
 local mysql = require "resty.mysql"
 local db, err = mysql:new()
 local ok, err, errno, sqlstate = db:connect{
-   host = "125.x.x.x",
+   host = "<DATABASE>",
    port = 3306,
-   database = "isucon2",
+   database = "<dbname>",
    user = "isucon2app",
    password = "isunageruna",
    max_packet_size = 1024 * 1024 }
